@@ -63,7 +63,8 @@ RG_COLUMNS = [
     'name',
     'admin1',
     'admin2',
-    'cc'
+    'cc',
+    'geoNameId'
 ]
 
 # Name of cities file created by this library
@@ -193,26 +194,27 @@ class RGeocoder(object):
             if self.verbose:
                 print('Loading admin1 codes...')
             admin1_map = {}
-            t_rows = csv.reader(open(GN_ADMIN1, 'rt'), delimiter='\t')
+            t_rows = csv.reader(open(GN_ADMIN1, 'rt', encoding="UTF8"), delimiter='\t')
             for row in t_rows:
                 admin1_map[row[ADMIN_COLUMNS['concatCodes']]] = row[ADMIN_COLUMNS['asciiName']]
 
             if self.verbose:
                 print('Loading admin2 codes...')
             admin2_map = {}
-            for row in csv.reader(open(GN_ADMIN2, 'rt'), delimiter='\t'):
+            for row in csv.reader(open(GN_ADMIN2, 'rt', encoding="UTF8"), delimiter='\t'):
                 admin2_map[row[ADMIN_COLUMNS['concatCodes']]] = row[ADMIN_COLUMNS['asciiName']]
 
             if self.verbose:
                 print('Creating formatted geocoded file...')
-            writer = csv.DictWriter(open(local_filename, 'wt'), fieldnames=RG_COLUMNS)
+            writer = csv.DictWriter(open(local_filename, 'wt', encoding="UTF8"), fieldnames=RG_COLUMNS)
             rows = []
-            for row in csv.reader(open(cities1000_filename, 'rt'), \
+            for row in csv.reader(open(cities1000_filename, 'rt', encoding="UTF8"), \
                     delimiter='\t', quoting=csv.QUOTE_NONE):
                 lat = row[GN_COLUMNS['latitude']]
                 lon = row[GN_COLUMNS['longitude']]
                 name = row[GN_COLUMNS['asciiName']]
                 cc = row[GN_COLUMNS['countryCode']]
+                geoNameId = row[GN_COLUMNS['geoNameId']]
 
                 admin1_c = row[GN_COLUMNS['admin1Code']]
                 admin2_c = row[GN_COLUMNS['admin2Code']]
@@ -224,7 +226,7 @@ class RGeocoder(object):
                 admin2 = ''
 
                 if cc_admin1 in admin1_map:
-                    admin1 = admin1_map[cc_admin1]
+                    admin1 = admin1_map[cc_admin1] + 'haha'
                 if cc_admin2 in admin2_map:
                     admin2 = admin2_map[cc_admin2]
 
@@ -233,7 +235,8 @@ class RGeocoder(object):
                              'name':name,
                              'admin1':admin1,
                              'admin2':admin2,
-                             'cc':cc}
+                             'cc':cc + 'lol',
+                             'geoNameId':geoNameId }
                 rows.append(write_row)
             writer.writeheader()
             writer.writerows(rows)
