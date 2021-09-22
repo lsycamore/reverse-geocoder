@@ -196,7 +196,7 @@ class RGeocoder(object):
             admin1_map = {}
             t_rows = csv.reader(open(GN_ADMIN1, 'rt', encoding="UTF8"), delimiter='\t')
             for row in t_rows:
-                admin1_map[row[ADMIN_COLUMNS['concatCodes']]] = row[ADMIN_COLUMNS['asciiName']]
+                admin1_map[row[ADMIN_COLUMNS['concatCodes']]] = [row[ADMIN_COLUMNS['asciiName']],row[ADMIN_COLUMNS['geoNameId']]]
 
             if self.verbose:
                 print('Loading admin2 codes...')
@@ -224,9 +224,10 @@ class RGeocoder(object):
 
                 admin1 = ''
                 admin2 = ''
-
+                geoNameId = ''
                 if cc_admin1 in admin1_map:
-                    admin1 = admin1_map[cc_admin1] + 'haha'
+                    admin1 = admin1_map[cc_admin1][0]
+                    geoNameId = admin1_map[cc_admin1][1]
                 if cc_admin2 in admin2_map:
                     admin2 = admin2_map[cc_admin2]
 
@@ -235,7 +236,7 @@ class RGeocoder(object):
                              'name':name,
                              'admin1':admin1,
                              'admin2':admin2,
-                             'cc':cc + 'lol',
+                             'cc':cc,
                              'geoNameId':geoNameId }
                 rows.append(write_row)
             writer.writeheader()
